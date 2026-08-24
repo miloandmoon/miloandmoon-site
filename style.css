@@ -204,7 +204,7 @@ h1 em{font-style:normal;color:var(--accent);
 @media (max-width:430px){
   .bookgroup-head{gap:13px}
 }
-.finished figcaption{margin-top:8px;font-size:.9rem;color:var(--muted);
+.finished figcaption{margin-top:8px;font-size:.9rem;color:var(--soft);
   text-align:center}
 
 /* ── the crayon row, the series' signature device ───── */
