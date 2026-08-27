@@ -97,9 +97,22 @@ h1 em{font-style:normal;color:var(--accent);
    ⚠️ The tilt stays: it is the brand's look, and `gap` keeps the rotated
    corners clear of each other. Do not raise it much past 3deg without checking
    the corners at the narrowest column. */
-.fan{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:clamp(10px,1.9vw,20px);align-items:start}
-.fanned{display:block;width:100%;border-radius:8px;
+/* ⚠️ WRAPPING FLEX, NOT GRID, AND THE DIFFERENCE ONLY SHOWS AT 9, 10 AND 11
+   BOOKS. A 4-column grid left a short final row hard against the LEFT edge:
+   with nine titles the ninth cover hung alone under the first column with
+   three empty cells beside it, reading as a mistake rather than a row. Flex
+   with `justify-content:center` centres whatever the last row happens to hold.
+   ⛔ At 8 and 12 the two are pixel-identical — full rows have nothing to
+   centre — so this is invisible today and only earns its keep the day a ninth
+   book lands. That is exactly why it goes in NOW: otherwise it becomes a
+   layout decision taken in a hurry on the day the catalogue grows.
+   📌 The basis is `25% minus three quarters of the gap`, because four items
+   in a row carry THREE gaps between them, and each item must give back its
+   share. Get that wrong and the fourth wraps to a row of its own. */
+.fan{display:flex;flex-wrap:wrap;justify-content:center;
+  gap:clamp(10px,1.9vw,20px);align-items:flex-start}
+.fanned{display:block;flex:0 0 calc(25% - clamp(10px,1.9vw,20px) * 3 / 4);
+  border-radius:8px;
   background:var(--field);padding:clamp(4px,.7vw,8px);transform:rotate(var(--tilt));
   box-shadow:0 8px 20px rgba(42,52,64,.18);transition:transform .18s}
 .fanned:hover{transform:rotate(0deg) translateY(-10px) scale(1.05);z-index:3;
