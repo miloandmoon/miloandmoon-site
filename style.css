@@ -78,15 +78,30 @@ h1 em{font-style:normal;color:var(--accent);
 .cta:active{transform:translateY(5px);box-shadow:none}
 
 /* Covers fanned out like books dropped on a table. */
-.fan{display:flex;justify-content:center;align-items:flex-end}
-/* ⚠️ Overlap is tuned so the TITLE on each cover stays readable. At -5.5%
-   the next cover ate the word ANIMALS, which defeats the point of showing
-   covers at all — the title IS the product. */
-.fanned{display:block;width:40%;margin-inline:-3.4%;border-radius:8px;
-  background:var(--field);padding:8px;transform:rotate(var(--tilt));
-  box-shadow:0 12px 30px rgba(42,52,64,.2);transition:transform .18s}
-.fanned:first-child{margin-left:0}
-.fanned:last-child{margin-right:0}
+/* ⛔ ROWS OF FOUR, NOT ONE OVERLAPPING FAN — AND THE REASON IS THAT A FAN
+   CANNOT SURVIVE THE CATALOGUE GROWING. The old rule laid every cover in one
+   flex row at 40% width with -3.4% margins, so each new title stole visible
+   width from every existing one. Measured on a 375px phone with 8 books: each
+   card rendered 62px wide with only **41px** of it visible, 74px tall — under
+   the 44px WCAG 2.5.5 tap minimum, and overlapping its neighbours. At the 12
+   books this series is heading for it would have been 29px. The shrink was
+   linear in the number of books, so it was a property of the layout, not a
+   number that could be tuned. (Author's request, 27 Aug 2026.)
+   ⭐ A grid holds its cell size and grows DOWNWARDS instead: four across on
+   any screen, a new row every four books, each cover whole. Same phone now
+   gives ~79px per cover, and it stays ~79px at 12 books or 40.
+   📌 This also retires the old overlap note that lived here — it explained why
+   the negative margin was -3.4% rather than -5.5% (at -5.5% the next cover ate
+   the word ANIMALS). There is no overlap left to tune, and a comment
+   explaining a rule that no longer exists is worse than no comment.
+   ⚠️ The tilt stays: it is the brand's look, and `gap` keeps the rotated
+   corners clear of each other. Do not raise it much past 3deg without checking
+   the corners at the narrowest column. */
+.fan{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:clamp(10px,1.9vw,20px);align-items:start}
+.fanned{display:block;width:100%;border-radius:8px;
+  background:var(--field);padding:clamp(4px,.7vw,8px);transform:rotate(var(--tilt));
+  box-shadow:0 8px 20px rgba(42,52,64,.18);transition:transform .18s}
 .fanned:hover{transform:rotate(0deg) translateY(-10px) scale(1.05);z-index:3;
   position:relative}
 .fanned img{display:block;border-radius:4px}
@@ -241,7 +256,6 @@ footer.site p > a:only-child{display:inline-flex;align-items:center;
      text has buried the only thing that sells it. */
   .hero{display:flex;flex-direction:column}
   .hero .fan{order:-1;margin:0 0 26px}
-  .fanned{width:44%;margin-inline:-2.6%}
   .lede{font-size:18px}
   h1{font-size:clamp(30px,8vw,42px)}
 }
