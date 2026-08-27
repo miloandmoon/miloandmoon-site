@@ -123,7 +123,9 @@ h1 em{font-style:normal;color:var(--accent);
 .shelf img{display:block;width:100%;border-radius:6px;
   box-shadow:0 8px 20px rgba(42,52,64,.22)}
 .meta{display:block}
-.bt{display:block;font-size:26px;font-weight:800;line-height:1.1}
+.bt{display:block;font-size:26px;font-weight:800;line-height:1.1;margin:0}  /* ⛔ margin:0 — .bt became an <h2> on 27 Aug 2026 so each book is a
+     real heading a screen reader can jump between. The UA heading
+     margin would otherwise reopen the gap this rule closes. */
 .bd{display:block;font-size:16px;color:var(--soft);margin:6px 0 12px}
 .market{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.03em;
   color:#fff;background:var(--accent);border-radius:999px;padding:5px 14px}
@@ -281,4 +283,45 @@ footer.site p > a:only-child{display:inline-flex;align-items:center;
   .brand{font-size:22px;gap:9px}
   .brand img{width:46px}
   .cta{width:100%;text-align:center}
+}
+
+/* ⛔ KEYBOARD FOCUS, ON EVERY INTERACTIVE THING. Until 27 Aug 2026 the sheet
+   had exactly ONE focus rule — `.lang select` — so a keyboard user tabbing the
+   shelf, the nav, the CTA or the footer saw whatever the browser happened to
+   draw over a tilted, shadowed card, which on `.book` and `.fanned` is next to
+   nothing. 📌 `:focus-visible`, not `:focus`: it shows the ring for keyboard
+   users and keeps it off mouse clicks, which is why the old `.cta:active`
+   press effect still reads as a press and not as an error state. */
+a:focus-visible,button:focus-visible,select:focus-visible,[tabindex]:focus-visible{
+  outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+.book:focus-visible,.fanned:focus-visible{outline:3px solid var(--accent);
+  outline-offset:5px}
+/* ⛔ THE RING IS NAVY, NOT `--c3` YELLOW, AND THE REASON IS ARITHMETIC.
+   `--c3` #FFD400 on `--paper` #FFFDF9 measures **1.41:1**. WCAG 2.2 wants 3:1
+   for a non-text indicator, so a yellow ring on this cream is very nearly
+   invisible — the exact failure a focus ring exists to prevent. `--accent`
+   #14233F measures 15.40:1 on the same paper.
+   ⚠️ The pre-existing `.lang select:focus-visible` rule ABOVE still uses
+   `--c3` and has always had this fault; it is left alone here only because
+   changing it is a visual change to a shipped control, not a bug fix in the
+   same breath as adding new rules. Fix it deliberately, not in passing.
+   📌 The CTA is the one control the navy ring cannot sit on — it IS navy
+   (`background:var(--accent)`), so navy-on-navy is 1:1. It gets a cream ring
+   instead, which measures 14.57:1 against that button. */
+.cta:focus-visible{outline:3px solid var(--paper);outline-offset:-6px}
+
+/* ⛔ MOTION IS A SETTING, NOT A TASTE. This design is built from cards that
+   rotate, lift and scale on hover — `.book`, `.fanned`, `.cta`, `.social a` —
+   and for a visitor with vestibular sensitivity that is not decoration, it is
+   nausea. The OS already knows; the sheet just has to ask.
+   ⚠️ It keeps the COLOUR and shadow transitions and kills only movement, so
+   nothing loses its affordance: a hovered card still lifts its shadow, it just
+   does not fly. 📌 `.01ms` rather than `none` so any code awaiting
+   `transitionend` still fires. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;transition-duration:.01ms !important;
+    scroll-behavior:auto !important}
+  .book:hover,.fanned:hover,.cta:hover,.cta:active,.social a:hover{
+    transform:none}
 }
