@@ -197,6 +197,22 @@ h1 em{font-style:normal;color:var(--accent);
   border-radius:20px;max-width:60ch}
 .soon p{margin:0 0 14px}
 .soon p:last-child{margin:0}
+/* ⛔ THIS STYLESHEET DECLARES NO RULE FOR <h2> AT ALL, and until 2 Sept 2026
+   that included the ones inside these boxes. There is a `.bookgroup-head h2`
+   and the shelf cards carry `.bt`, so every h2 anyone had LOOKED at was styled
+   — and a `.soon` heading fell all the way through to the browser default,
+   `font-size:1.5em;margin:.83em 0`. The top margin then STACKED ON TOP of the
+   box's own 38px padding, so "If you photograph a finished page" sat about
+   63px from the top edge and 38px from the bottom: it read as a box that
+   begins with a blank line, which is exactly how the author described it.
+   ⚠️ The fault is invisible in the markup and invisible in the stylesheet —
+   it is the absence of a rule, and nothing greps for an absence.
+   📌 Matches `.soon p`'s 14px so the box's rhythm is one number, not two.
+   Fixes the same silent gap on /halloween and /privacy, which have h2s in
+   these boxes too. */
+.soon h2{font-size:clamp(19px,2.4vw,24px);font-weight:800;line-height:1.15;
+  letter-spacing:-.01em;margin:0 0 14px}
+.soon h2:not(:first-child){margin-top:26px}
 
 /* ── the finished examples on /colours ───────────────── */
 /* ⛔ THE CLASS IS `finished`, NOT `coloured`, AND THAT IS LOAD-BEARING.
