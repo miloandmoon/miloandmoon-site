@@ -141,7 +141,7 @@ h1 em{font-style:normal;color:var(--accent);
 /* ── book grid ──────────────────────────────────────── */
 .books{display:grid;gap:clamp(20px,3vw,34px);
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.book{display:block;text-decoration:none;color:var(--ink);border-radius:20px;
+.book{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);border-radius:20px;
   background:var(--field);padding:22px 20px 24px;text-align:center;
   transform:rotate(var(--tilt));transition:transform .18s,box-shadow .18s;
   box-shadow:0 8px 0 rgba(42,52,64,.12)}
@@ -150,7 +150,7 @@ h1 em{font-style:normal;color:var(--accent);
 .shelf{display:block;margin-bottom:16px}
 .shelf img{display:block;width:100%;border-radius:6px;
   box-shadow:0 8px 20px rgba(42,52,64,.22)}
-.meta{display:block}
+.meta{display:flex;flex-direction:column;flex:1 1 auto}
 .bt{display:block;font-size:26px;font-weight:800;line-height:1.1;margin:0}  /* ⛔ margin:0 — .bt became an <h2> on 27 Aug 2026 so each book is a
      real heading a screen reader can jump between. The UA heading
      margin would otherwise reopen the gap this rule closes. */
@@ -158,6 +158,28 @@ h1 em{font-style:normal;color:var(--accent);
 .market{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.03em;
   color:#fff;background:var(--accent);border-radius:999px;padding:5px 14px}
 .market.soon{background:var(--c2);color:#3a2400}
+/* ⛔ THE BUTTON SITS AT THE FOOT OF THE CARD, NOT UNDER THE LAST LINE OF TEXT.
+   Author, 5 Sept 2026: *"a bit too high and leaves a lot of empty space at the
+   bottom of the card"*. Measured before changing anything — the gap under the
+   pill ran 95px (Birds), 96 (Bugs), 122 (Sports) and 144 (Vehicles), against
+   26-52px on the `coming soon` cards. ⚠️ The descriptions were NOT the cause:
+   Vehicles and Dinosaurs both wrap to 32px and their gaps were 144 and 51.
+   ⭐ THE REAL CAUSE IS THAT ONLY ONE VARIANT WAS BEING PADDED, AND BY ACCIDENT
+   — the standalone `.soon` PANEL rule further down (margin-top:30px, padding up
+   to 38px, for a box with its own h2 and paragraphs) also matches
+   `.market.soon`, so the "coming soon" pill was inflated into something that
+   happened to fill the card. The Amazon pill got none of it and looked stranded.
+   📌 So the fix is not more padding on `.market` — it is to stop depending on
+   the text ending where the card ends. `.book` and `.meta` become flex columns,
+   `.meta` takes the slack, and `margin-top:auto` seats the pill on the card's
+   floor. Every card in a row then lands its button on the same line, whatever
+   the description does.
+   ⚠️ `.book .market` (0,2,0) is deliberately more specific than `.soon` (0,1,0),
+   which sets margin-top:30px and would otherwise win on source order.
+   ⚠️ align-self:center is REQUIRED: a flex item is blockified, so the
+   inline-block pill would stretch the full card width and `text-align:center`
+   on `.book` would no longer centre it. */
+.book .market{margin-top:auto;align-self:center}
 
 /* ── one title ──────────────────────────────────────── */
 .title{display:grid;gap:clamp(26px,4vw,52px);align-items:start;
