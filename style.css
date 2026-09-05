@@ -194,7 +194,14 @@ h1 em{font-style:normal;color:var(--accent);
 .bullets li:nth-child(2)::before{background:var(--c4)}
 .bullets li:nth-child(3)::before{background:var(--c5)}
 .buy{margin-top:26px;font-weight:700}
-.buy.soon{color:var(--soft)}
+/* ⚠️ THE BOOK PAGE'S COMING-SOON BOX IS KEPT EXACTLY AS IT SHIPPED, ON PURPOSE.
+   It got its field-coloured card by the same accident the pill did — but unlike
+   the pill it reads as deliberate, so scoping `section.soon` above would have
+   silently restyled twelve live book pages that nobody complained about.
+   📌 The look is now DECLARED rather than inherited: delete this rule and the
+   line goes back to plain muted text, which is what `.buy.soon` alone meant. */
+.buy.soon{color:var(--soft);margin-top:30px;padding:clamp(22px,4vw,38px);
+  background:var(--field);border-radius:20px;max-width:60ch}
 /* ⛔ A SECOND `.cta` RULE USED TO LIVE HERE AND IT BROKE THE HOME PAGE.
    `.cta` was already defined above — accent field, white type, a 3-D press on
    :hover and :active — and styling the new buy button meant writing a rule with
@@ -215,10 +222,22 @@ h1 em{font-style:normal;color:var(--accent);
 .isbn{font-size:14px;color:var(--soft);margin:4px 0 0}
 
 /* ── the colour-in holding page ─────────────────────── */
-.soon{margin-top:30px;padding:clamp(22px,4vw,38px);background:var(--field);
+/* ⛔ `section.soon`, NOT `.soon` — THE BARE CLASS MATCHED THREE DIFFERENT THINGS.
+   Author, 5 Sept 2026, on the shelf pills. `soon` is used as a MODIFIER in two
+   places and as a STANDALONE PANEL here, and this rule was hitting all three:
+   81 `<section class="soon">` (this box, correct), 12
+   `<span class="market soon">` (the shelf pill) and 12 `<p class="buy soon">`
+   (the book page's buy line). The pill was inheriting `padding:38px` and a
+   30px top margin, which inflated a 34px pill to 103px — that is why the
+   coming-soon card looked padded out and the Amazon pill next to it looked
+   stranded. 📌 This file already carries the lesson, twenty lines up: *"Before
+   adding a class, grep for it... the tell is that the same NOUN appears
+   twice."* It happened again with the same noun. ⭐ Scoping to the element the
+   panel is ALWAYS on fixes both accidental matches and needs no markup change. */
+section.soon{margin-top:30px;padding:clamp(22px,4vw,38px);background:var(--field);
   border-radius:20px;max-width:60ch}
-.soon p{margin:0 0 14px}
-.soon p:last-child{margin:0}
+section.soon p{margin:0 0 14px}
+section.soon p:last-child{margin:0}
 /* ⛔ THIS STYLESHEET DECLARES NO RULE FOR <h2> AT ALL, and until 2 Sept 2026
    that included the ones inside these boxes. There is a `.bookgroup-head h2`
    and the shelf cards carry `.bt`, so every h2 anyone had LOOKED at was styled
@@ -232,9 +251,9 @@ h1 em{font-style:normal;color:var(--accent);
    📌 Matches `.soon p`'s 14px so the box's rhythm is one number, not two.
    Fixes the same silent gap on /halloween and /privacy, which have h2s in
    these boxes too. */
-.soon h2{font-size:clamp(19px,2.4vw,24px);font-weight:800;line-height:1.15;
+section.soon h2{font-size:clamp(19px,2.4vw,24px);font-weight:800;line-height:1.15;
   letter-spacing:-.01em;margin:0 0 14px}
-.soon h2:not(:first-child){margin-top:26px}
+section.soon h2:not(:first-child){margin-top:26px}
 
 /* ── the finished examples on /colours ───────────────── */
 /* ⛔ THE CLASS IS `finished`, NOT `coloured`, AND THAT IS LOAD-BEARING.
