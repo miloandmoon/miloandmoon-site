@@ -1,5 +1,10 @@
 /* Milo & Moon — every colour here comes out of cover_layout.py and
    build_pdf.py, so the site and the printed books cannot drift apart. */
+/* ⭐ Baloo 2, self-hosted from this domain under the OFL — one variable file,
+   400-800, latin only (33KB). `swap` so text is never invisible while it
+   loads. NOT a CDN request: see the note at the top of build_site.py. */
+@font-face{font-family:"Baloo 2";src:url("/fonts/Baloo2.woff2") format("woff2");
+  font-weight:400 800;font-style:normal;font-display:swap}
 :root{
   --ink:#2A3440;              /* BODY_INK: the type on every printed cover */
   --accent:#14233F;           /* the brand navy, identical on all 11 covers */
@@ -16,11 +21,17 @@
   --c5:#0F9BD7; --c6:#7A4FBF; --c7:#EC5F9B; --c8:#00B39F;
   --round:"Baloo 2","Fredoka One",Fredoka,"Chalkboard SE",Seravek,
           "Avenir Next",-apple-system,"Segoe UI",sans-serif;
+  /* Body copy in the system sans: a rounded display face at paragraph
+     length is heavy, and the contrast is what makes the headings sing. */
+  --sans:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--round);
-  font-size:19px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:17.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+/* Everything that is a NAME or a CONTROL takes the display face. */
+h1,h2,h3,.bt,.badge,.num,.cta,.brand,header nav a,.market,.age,.eyebrow,
+.lede,.free-card h3,.art-grid figcaption,.trust strong{font-family:var(--round)}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .skip{position:absolute;left:-9999px}
 .skip:focus{left:8px;top:8px;background:var(--accent);color:#fff;padding:8px 14px;
