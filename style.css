@@ -369,6 +369,88 @@ footer.site p > a:only-child{display:inline-flex;align-items:center;
   .cta{width:100%;text-align:center}
 }
 
+/* ── the home page: age pills, one section per line ──── */
+/* ⭐ 12 Sept 2026. Everything below is the line-sectioned home page, the
+   free-printable pages and the strips that reuse the shelf card. Nothing here
+   names a product line: a third line gets a third `.line` section from the
+   same rules. */
+.ages{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 0}
+.age{display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+  font-weight:700;font-size:15.5px;color:var(--accent);background:var(--paper);
+  border:2.5px solid var(--accent);border-radius:999px;padding:6px 18px 6px 6px;
+  min-height:44px;box-shadow:0 3px 0 var(--accent);transition:transform .12s,
+  box-shadow .12s}
+.age strong{background:var(--accent);color:var(--badge-ink);border-radius:999px;
+  padding:6px 12px;font-weight:800;font-size:14px;white-space:nowrap}
+.age:hover{transform:translateY(1px);box-shadow:0 2px 0 var(--accent)}
+.age:active{transform:translateY(3px);box-shadow:none}
+.line{margin-top:clamp(48px,7vw,90px)}
+.line-head{max-width:66ch;margin-bottom:22px}
+.line-head .badge{margin-bottom:14px}
+.line-head h2:not(.badge){font-size:clamp(24px,3.2vw,32px);font-weight:800;
+  line-height:1.1;letter-spacing:-.01em;margin:0 0 10px}
+.line-blurb{margin:10px 0 0;color:var(--soft);max-width:60ch}
+.line .pitch{margin-top:22px;margin-bottom:28px}
+/* Four covers to a row inside a line section or a handover strip: the shelf's
+   260px minimum wraps a four-book strip 3+1 on a laptop, which reads as a
+   mistake rather than a row. 210px seats four across the 1120px main. */
+.line .books{grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr))}
+.more{margin:26px 0 0;text-align:center}
+/* The outline button — same shape as `.cta`, paper ground, for "see all". */
+.cta.ghost{background:var(--paper);color:var(--accent);
+  border:2.5px solid var(--accent);box-shadow:0 5px 0 var(--accent);margin-top:0}
+.cta.ghost:hover{box-shadow:0 3px 0 var(--accent)}
+.cta.ghost:active{box-shadow:none}
+/* The compact card row under a book page — covers and names only. */
+.books.mini{grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr))}
+.books.mini .book{padding:14px 12px 16px}
+.books.mini .bt{font-size:18px}
+.books.mini .bd{display:none}
+
+/* ── the free printables ────────────────────────────── */
+.free-cards{display:grid;gap:clamp(18px,3vw,30px);
+  grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr))}
+.free-card{display:block;text-decoration:none;color:var(--ink);background:#fff;
+  border:2px solid var(--rule);border-radius:20px;padding:18px;
+  transition:transform .18s,box-shadow .18s,border-color .18s}
+.free-card:hover{transform:translateY(-6px);border-color:var(--accent);
+  box-shadow:0 16px 34px rgba(42,52,64,.16)}
+.free-card .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.free-card .trio img{width:100%;height:auto;display:block;border-radius:10px;
+  border:1px solid var(--rule)}
+.free-card h3{margin:14px 0 2px;font-size:22px;line-height:1.1}
+.free-card p{margin:0;color:var(--soft);font-size:15.5px}
+.art-grid{display:grid;gap:14px;margin:22px 0;
+  grid-template-columns:repeat(auto-fill,minmax(min(150px,100%),1fr))}
+.art-grid.small{grid-template-columns:repeat(auto-fill,minmax(min(120px,100%),1fr))}
+.art-grid a{text-decoration:none;color:var(--ink)}
+.art-grid figure{margin:0;background:#fff;border:2px solid var(--rule);
+  border-radius:16px;padding:8px;transition:transform .18s,box-shadow .18s,
+  border-color .18s}
+.art-grid a:hover figure{transform:translateY(-4px);border-color:var(--accent);
+  box-shadow:0 12px 26px rgba(42,52,64,.16)}
+.art-grid img{width:100%;height:auto;display:block;border-radius:10px}
+.art-grid figcaption{text-align:center;font-weight:700;font-size:15px;margin-top:6px}
+/* The pin landing page: the drawing on the left, the button on the right. */
+.printable{display:grid;gap:clamp(22px,4vw,44px);align-items:center;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);margin-top:8px}
+.preview{margin:0;background:#fff;border:2px solid var(--rule);border-radius:20px;
+  padding:clamp(10px,2vw,22px);box-shadow:0 14px 34px rgba(42,52,64,.14)}
+.preview img{width:100%;height:auto;display:block}
+.printable .buy,.printable .cta,.pagehead .buy{margin-top:0}
+.pagehead .buy{margin-top:22px}
+.printable-copy p{margin:0 0 14px}
+
+/* ── the trust strip at the foot of the home page ───── */
+.trust{display:grid;gap:18px;margin-top:clamp(48px,7vw,90px);
+  grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr))}
+.trust .bit{text-align:left;padding:22px 22px 24px}
+.trust strong{display:block;font-size:18px;line-height:1.2;color:var(--accent)}
+.trust p{margin:8px 0 0;font-weight:500;color:var(--soft);font-size:15.5px}
+@media (max-width:820px){
+  .printable{grid-template-columns:1fr}
+}
+
 /* ⛔ KEYBOARD FOCUS, ON EVERY INTERACTIVE THING. Until 27 Aug 2026 the sheet
    had exactly ONE focus rule — `.lang select` — so a keyboard user tabbing the
    shelf, the nav, the CTA or the footer saw whatever the browser happened to
