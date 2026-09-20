@@ -211,8 +211,9 @@ h1 em{font-style:normal;color:var(--accent);
       eyebrow directly above, so repeating it here would be the third time on
       one screen — and without it the lozenge is an empty frame drawn round the
       pill, lopsided by that padding. Strip the chrome, keep the pill.
-   ⚠️ `.title .age` is deliberately NOT `^\.age{` — that is what `check_css`
-   counts as a second definition of the same class, and the later rule silently
+   ⚠️ `.title .age` is deliberately NOT a bare `.age{` at line start:
+   that is what `check_css` counts as a second definition of the same
+   class, and the later rule silently
    winning is the `.cta` bug that check exists to catch. */
 .title .ages{margin:0 0 18px}
 .title .age{background:none;border:0;box-shadow:none;padding:0;min-height:0}
