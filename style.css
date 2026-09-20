@@ -202,6 +202,20 @@ h1 em{font-style:normal;color:var(--accent);
 .art{background:var(--field);border-radius:20px;padding:clamp(18px,3vw,34px)}
 .art img{display:block;border-radius:6px;box-shadow:0 14px 34px rgba(42,52,64,.24)}
 .sub{font-size:17px;color:var(--soft);margin:0 0 18px}
+/* The age band on a BOOK page. Two things are scoped, and the homepage rule is
+   right for the homepage in both.
+   1. `.ages` is the last thing in the hero there — 24px above, nothing below.
+      In the title column it has a lede under it and sat flush against it.
+   2. `.age` is a bordered lozenge sized for a pill PLUS a line name, with the
+      18px right padding that label needs. A book page states its line in the
+      eyebrow directly above, so repeating it here would be the third time on
+      one screen — and without it the lozenge is an empty frame drawn round the
+      pill, lopsided by that padding. Strip the chrome, keep the pill.
+   ⚠️ `.title .age` is deliberately NOT `^\.age{` — that is what `check_css`
+   counts as a second definition of the same class, and the later rule silently
+   winning is the `.cta` bug that check exists to catch. */
+.title .ages{margin:0 0 18px}
+.title .age{background:none;border:0;box-shadow:none;padding:0;min-height:0}
 .bullets{padding-left:0;margin:22px 0 0;list-style:none}
 .bullets li{position:relative;padding-left:34px;margin-bottom:11px;font-weight:600}
 .bullets li::before{content:"";position:absolute;left:0;top:.42em;width:18px;
