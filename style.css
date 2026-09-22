@@ -438,6 +438,16 @@ footer.site p > a:only-child{display:inline-flex;align-items:center;
    mistake rather than a row. 210px seats four across the 1120px main. */
 .line .books{grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr))}
 .more{margin:26px 0 0;text-align:center}
+/* ⛔ WITHOUT THIS THE SHEET NAV IS A ROW OF BARE DIGITS — `12345`, no gap and
+   no affordance, because the links carry nothing but a number. They are
+   numbers on purpose: a pin lands on one sheet and the other four are a
+   footnote, not a menu. ⚠️ `.q-list` and `.q-or` are still unstyled and that
+   is a SEPARATE gap, left where it is rather than fixed from here — the
+   question pages are another session's in-flight work. */
+.sheet-nav{margin:14px 0 0}
+.sheet-nav a{display:inline-block;min-width:2.1em;margin:0 6px 6px 0;
+  padding:5px 0;text-align:center;border:1px solid var(--rule);
+  border-radius:8px;font-weight:700;text-decoration:none}
 /* The outline button — same shape as `.cta`, paper ground, for "see all". */
 .cta.ghost{background:var(--paper);color:var(--accent);
   border:2.5px solid var(--accent);box-shadow:0 5px 0 var(--accent);margin-top:0}
