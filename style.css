@@ -326,7 +326,7 @@ section.soon h2:not(:first-child){margin-top:26px}
 
 /* ── the crayon row, the series' signature device ───── */
 .crayons{height:clamp(56px,7vw,92px);margin-top:clamp(40px,6vw,70px);
-  background:url("/brand/crayons.png") repeat-x bottom center;
+  background:url("/brand/crayons.webp") repeat-x bottom center;
   background-size:auto 100%}
 
 footer.site{border-top:3px solid var(--rule);padding:32px clamp(16px,4vw,52px) 60px;
@@ -358,6 +358,12 @@ footer.site p > a:only-child{display:inline-flex;align-items:center;
   .hero .fan{order:-1;margin:0 0 26px}
   .lede{font-size:18px}
   h1{font-size:clamp(30px,8vw,42px)}
+}
+@media (max-width:560px){
+  /* A book page's cover filled the whole first screen (~600px tall at 375 wide),
+     pushing the title and the buy button below the fold. A narrower cover
+     still reads, and brings both up. */
+  .title .art{max-width:260px;margin-inline:auto}
 }
 @media (max-width:560px){
   /* The nav wrapped mid-phrase — "Colouring / Story Books" over two lines and
