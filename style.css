@@ -1,5 +1,13 @@
 /* Milo & Moon — every colour here comes out of cover_layout.py and
-   build_pdf.py, so the site and the printed books cannot drift apart. */
+   build_pdf.py, so the site and the printed books cannot drift apart.
+
+   ⭐ THE BOLD ART DIRECTION, 20 Nov 2026 — `docs/DECISIONS.md` →
+   *the-website-gets-the-bold-art-direction*. One book, large, on its own
+   colour; very large type; one full-width band per line; a flat cover grid.
+   ⛔ The sheet it replaced carried the history of the fanned hero, the tilted
+   cards, the badge and the crayon strip. Those devices are gone, so their
+   notes went with them — `git log -p build_site.py` has every one. The notes
+   kept below are the ones whose rule still binds. */
 /* ⭐ Baloo 2, self-hosted from this domain under the OFL — one variable file,
    400-800, latin only (33KB). `swap` so text is never invisible while it
    loads. NOT a CDN request: see the note at the top of build_site.py. */
@@ -8,17 +16,25 @@
 :root{
   --ink:#2A3440;              /* BODY_INK: the type on every printed cover */
   --accent:#14233F;           /* the brand navy, identical on all 11 covers */
-  --badge-ink:#FFF6E4;        /* INK: the cream type inside the badge */
+  --badge-ink:#FFF6E4;        /* INK: the cream type on the navy */
   --paper:#FFFDF9;            /* warm, not clinical white */
   --rule:#EDE6DA;
   --soft:#5F6874;
-  /* ⚠️ FALLBACK ONLY — every page sets --field inline from cover_layout.tint().
-     This literal is what shows if that ever stops happening, so it is written
-     as the Vehicles tint and must be updated with it. */
+  /* ⚠️ FALLBACK ONLY — every page sets --field inline from cover_layout.tint(). */
   --field:#FBECD5;
   /* The crayon palette, straight from build_pdf.PALETTE. */
   --c1:#E5322D; --c2:#F5871F; --c3:#FFD400; --c4:#43B049;
   --c5:#0F9BD7; --c6:#7A4FBF; --c7:#EC5F9B; --c8:#00B39F;
+  /* ⭐ THE BAND A PAGE OPENS ON. The header and the first block of a page
+     share one ground, set inline on <body> by `shell(top=...)`: a line's own
+     colour on its shelf, a book's cover colour on its page, navy otherwise.
+     `--btn` is the button that reads on that ground. */
+  --top-bg:var(--accent); --top-fg:var(--badge-ink);
+  --btn:var(--c3); --btn-ink:var(--accent);
+  --pad:clamp(16px,4.5vw,64px);
+  /* Content is held to 1200px; a band's COLOUR runs to the edge. One value
+     does both: it is a margin on plain blocks and a padding on bands. */
+  --gutter:max(var(--pad),calc((100% - 1200px) / 2));
   --round:"Baloo 2","Fredoka One",Fredoka,"Chalkboard SE",Seravek,
           "Avenir Next",-apple-system,"Segoe UI",sans-serif;
   /* Body copy in the system sans: a rounded display face at paragraph
@@ -31,7 +47,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
   font-size:17.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
 /* Everything that is a NAME or a CONTROL takes the display face. */
 h1,h2,h3,.bt,.badge,.num,.cta,.brand,header nav a,.market,.age,.eyebrow,
-.lede,.free-card h3,.art-grid figcaption,.trust strong{font-family:var(--round)}
+.lede,.free-card h3,.art-grid figcaption,.trust strong,.show-cap,.tq-stem,
+.tq-opt,.wordmark{font-family:var(--round)}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .skip{position:absolute;left:-9999px}
 .skip:focus{left:8px;top:8px;background:var(--accent);color:#fff;padding:8px 14px;
@@ -39,440 +56,249 @@ h1,h2,h3,.bt,.badge,.num,.cta,.brand,header nav a,.market,.age,.eyebrow,
 a{color:var(--accent)}
 img{max-width:100%;height:auto}
 
-/* ── header ─────────────────────────────────────────── */
-header.site{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center;
-  justify-content:space-between;padding:16px clamp(16px,4vw,52px);
-  background:var(--paper);border-bottom:3px solid var(--rule)}
+/* ── header: sits on the page's opening band ────────── */
+header.site{display:flex;flex-wrap:wrap;gap:8px 28px;align-items:center;
+  justify-content:space-between;padding:14px var(--gutter);
+  background:var(--top-bg);color:var(--top-fg);transition:background-color .5s,color .5s}
+header.site a,footer.site a{color:inherit}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;
-  color:var(--accent);font-weight:800;font-size:clamp(22px,2.6vw,30px);
-  letter-spacing:-.01em}
-.brand img{width:clamp(52px,6vw,72px);height:auto}
-header nav{display:flex;align-items:center;gap:22px;font-size:16px}
-header nav a{text-decoration:none;font-weight:700}
-header nav a:hover{color:var(--c1)}
-/* The edition picker. It stays a native <select> on purpose — on a phone that
-   opens the OS wheel, which is a better control than anything rebuilt in
-   div-and-JavaScript, and it needs no script at all. Only the chrome is
-   restyled: appearance:none removes the system look, and the chevron is an
-   inline SVG data URI so it costs no request. */
+  font-weight:800;font-size:clamp(21px,2.4vw,27px);letter-spacing:-.01em}
+/* The mark is drawn in navy line, so it stands on a cream disc on any band. */
+.brand img,footer.site img{background:var(--badge-ink);border-radius:50%;padding:3px}
+.brand img{width:clamp(44px,5vw,56px);height:auto}
+header nav{display:flex;flex-wrap:wrap;align-items:center;gap:4px 22px;font-size:16px}
+header nav a{text-decoration:none;font-weight:700;min-height:44px;
+  display:inline-flex;align-items:center}
+header nav a:hover{text-decoration:underline;text-underline-offset:6px;
+  text-decoration-thickness:3px}
+/* The edition picker stays a native <select> on purpose — on a phone that
+   opens the OS wheel, a better control than anything rebuilt in script.
+   ⚠️ The chevron is a pseudo-element in `currentColor`, not an image: the
+   header changes ground from page to page and a fixed-colour arrow vanished
+   on the navy. */
 .lang{position:relative;display:inline-flex;align-items:center}
+.lang::after{content:"";position:absolute;right:17px;top:50%;width:7px;height:7px;
+  border-right:2.5px solid;border-bottom:2.5px solid;pointer-events:none;
+  transform:translateY(-70%) rotate(45deg)}
 .lang select{appearance:none;-webkit-appearance:none;font:inherit;
-  font-family:var(--round);font-size:15px;font-weight:700;
-  padding:9px 40px 9px 18px;border:2.5px solid var(--accent);border-radius:999px;
-  background-color:var(--paper);color:var(--accent);cursor:pointer;
-  box-shadow:0 3px 0 var(--accent);transition:transform .12s,box-shadow .12s;
-  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%2314233F' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 15px center;
-  background-size:12px 8px}
-.lang select:hover{background-color:#F3FAFA}
-.lang select:active{transform:translateY(3px);box-shadow:none}
-.lang select:focus-visible{outline:3px solid var(--c3);outline-offset:3px}
+  font-family:var(--round);font-size:15px;font-weight:700;color:inherit;
+  padding:8px 40px 8px 18px;border:2.5px solid;border-radius:999px;
+  background:transparent;cursor:pointer}
+.lang select option{color:var(--accent);background:#fff}
 
-main{max-width:1120px;margin:0 auto;padding:clamp(26px,4vw,56px) clamp(16px,4vw,52px) 70px}
+/* ── the page: plain blocks are held in, bands run to the edge ── */
+main>*{margin-block:clamp(28px,4.5vw,60px)}
+/* ⚠️ `:not(...)` gives this rule the weight to beat a block's own `margin`
+   shorthand. Written as a bare `main>*`, any block with `margin:22px 0` of
+   its own (`.art-grid`, `.tq`) ran flush to the edge of the screen. */
+main>:not(.hero,.line,.pagehead,.title){margin-inline:var(--gutter)}
+main>.hero,main>.line,main>.pagehead,main>.title{margin:0;
+  padding:clamp(40px,7vw,104px) var(--gutter)}
+main>.hero,main>.pagehead,main>.title{background:var(--top-bg);color:var(--top-fg);
+  padding-top:clamp(14px,3vw,40px);transition:background-color .5s,color .5s}
+/* A band takes `--bg`/`--fg` inline; one given neither stands on the page's
+   pale tint, which is what the strips under a book or a free page use. */
+.line{background:var(--bg,var(--field));color:var(--fg,var(--ink))}
+/* ⛔ `:not(.cta)` IS LOAD-BEARING. Without it this rule out-ranks `.cta` and
+   the button takes the band's ink: navy on navy, a buy button with no label. */
+.hero a:not(.cta),.line a:not(.cta),.pagehead a:not(.cta),.title a:not(.cta){color:inherit}
+.hero .lede,.line .lede,.pagehead .lede,.title .lede,.title .sub,.title .isbn,
+.hero .eyebrow,.pagehead .eyebrow,.title .eyebrow{color:inherit}
 
-/* ── hero ───────────────────────────────────────────── */
-.hero{display:grid;gap:clamp(26px,4vw,54px);align-items:center;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  /* ⭐ A shop window, not text on paper: the hero sits on the Vehicles tint
-     with the covers inside it, the same ground the book cards stand on. */
-  background:var(--field);border-radius:30px;padding:clamp(22px,4vw,56px);
-  box-shadow:inset 0 0 0 2px rgba(42,52,64,.05)}
 .eyebrow{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
   color:var(--c1);margin:0 0 12px}
-h1{font-size:clamp(34px,5.4vw,58px);line-height:1.04;margin:0 0 .4em;
-  font-weight:800;letter-spacing:-.02em;text-wrap:balance}
-h1 em{font-style:normal;color:var(--accent);
-  text-decoration:underline;text-decoration-color:var(--c3);
-  text-decoration-thickness:.16em;text-underline-offset:.06em}
+h1{font-size:clamp(34px,5.4vw,64px);line-height:1;margin:0 0 .35em;
+  font-weight:800;letter-spacing:-.025em;text-wrap:balance}
 .lede{font-size:19.5px;color:var(--soft);max-width:52ch;margin:0}
-.lede.big{font-size:22px;max-width:46ch}
-.cta{display:inline-block;margin-top:26px;background:var(--accent);color:#fff;
-  text-decoration:none;font-weight:800;font-size:18px;padding:14px 30px;
-  border-radius:999px;box-shadow:0 5px 0 #0d4a52;transition:transform .12s}
-.cta:hover{transform:translateY(2px);box-shadow:0 3px 0 #0d4a52}
+.lede.big{font-size:clamp(19px,1.9vw,23px);max-width:40ch}
+/* ⛔ ONE `.cta` RULE, EVER. A second one written three hundred lines down
+   once replaced this and made a button's label vanish — `check_css` now
+   reports a class defined twice. ⚠️ And every `var(--x)` needs a `--x:`:
+   an undeclared custom property fails silently and inherits. */
+.cta{display:inline-block;margin-top:22px;background:var(--btn);color:var(--btn-ink);
+  text-decoration:none;font-weight:800;font-size:18px;padding:13px 28px;border:0;
+  border-radius:999px;box-shadow:0 5px 0 rgba(0,0,0,.28);cursor:pointer;
+  transition:transform .12s,box-shadow .12s}
+.cta:hover{transform:translateY(2px);box-shadow:0 3px 0 rgba(0,0,0,.28)}
 .cta:active{transform:translateY(5px);box-shadow:none}
+/* The outline button, for "see all": it takes the band's own ink. */
+.cta.ghost{background:transparent;color:inherit;border:2.5px solid;
+  box-shadow:none;margin-top:0}
+.cta.ghost:hover{background:rgba(255,255,255,.22)}
 
-/* Covers fanned out like books dropped on a table. */
-/* ⛔ ROWS OF FOUR, NOT ONE OVERLAPPING FAN — AND THE REASON IS THAT A FAN
-   CANNOT SURVIVE THE CATALOGUE GROWING. The old rule laid every cover in one
-   flex row at 40% width with -3.4% margins, so each new title stole visible
-   width from every existing one. Measured on a 375px phone with 8 books: each
-   card rendered 62px wide with only **41px** of it visible, 74px tall — under
-   the 44px WCAG 2.5.5 tap minimum, and overlapping its neighbours. At the 12
-   books this series is heading for it would have been 29px. The shrink was
-   linear in the number of books, so it was a property of the layout, not a
-   number that could be tuned. (Author's request, 27 Aug 2026.)
-   ⭐ A grid holds its cell size and grows DOWNWARDS instead: four across on
-   any screen, a new row every four books, each cover whole. Same phone now
-   gives ~79px per cover, and it stays ~79px at 12 books or 40.
-   📌 This also retires the old overlap note that lived here — it explained why
-   the negative margin was -3.4% rather than -5.5% (at -5.5% the next cover ate
-   the word ANIMALS). There is no overlap left to tune, and a comment
-   explaining a rule that no longer exists is worse than no comment.
-   ⚠️ The tilt stays: it is the brand's look, and `gap` keeps the rotated
-   corners clear of each other. Do not raise it much past 3deg without checking
-   the corners at the narrowest column. */
-/* ⚠️ WRAPPING FLEX, NOT GRID, AND THE DIFFERENCE ONLY SHOWS AT 9, 10 AND 11
-   BOOKS. A 4-column grid left a short final row hard against the LEFT edge:
-   with nine titles the ninth cover hung alone under the first column with
-   three empty cells beside it, reading as a mistake rather than a row. Flex
-   with `justify-content:center` centres whatever the last row happens to hold.
-   ⛔ At 8 and 12 the two are pixel-identical — full rows have nothing to
-   centre — so this is invisible today and only earns its keep the day a ninth
-   book lands. That is exactly why it goes in NOW: otherwise it becomes a
-   layout decision taken in a hurry on the day the catalogue grows.
-   📌 The basis is `25% minus three quarters of the gap`, because four items
-   in a row carry THREE gaps between them, and each item must give back its
-   share. Get that wrong and the fourth wraps to a row of its own. */
-.fan{display:flex;flex-wrap:wrap;justify-content:center;
-  gap:clamp(10px,1.9vw,20px);align-items:flex-start}
-.fanned{display:block;flex:0 0 calc(25% - clamp(10px,1.9vw,20px) * 3 / 4);
-  border-radius:8px;
-  background:var(--field);padding:clamp(4px,.7vw,8px);transform:rotate(var(--tilt));
-  box-shadow:0 8px 20px rgba(42,52,64,.18);transition:transform .18s}
-.fanned:hover{transform:rotate(0deg) translateY(-10px) scale(1.05);z-index:3;
-  position:relative}
-.fanned img{display:block;border-radius:4px}
+/* ── the home hero: ONE book, on that book's own colour ─────── */
+/* The book changes by itself (see the script on the home page) and the band,
+   the header and the button change with it — all three read the custom
+   properties the script sets on <body>. */
+.hero{position:relative;overflow:hidden}
+.hero-stage{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);
+  gap:clamp(20px,4vw,60px);align-items:center;position:relative;z-index:1}
+.hero h1{font-size:clamp(46px,9.2vw,140px);line-height:.88;letter-spacing:-.035em;margin:0}
+.hero h1 em{font-style:normal;color:var(--c3)}
+.hero .lede{font-size:clamp(17px,1.5vw,20px);max-width:44ch;
+  margin-top:clamp(18px,2.4vw,30px);opacity:.95}
+.show{text-align:center}
+/* ⚠️ The cream edge is what `cover_layout.tint()` exists for, done another
+   way: a saturated cover on its own saturated ground disappears. */
+.show-cover{display:block;width:min(100%,400px);margin:0 auto;border-radius:10px;
+  overflow:hidden;border:5px solid var(--badge-ink);transform:rotate(-5deg);
+  box-shadow:14px 18px 0 rgba(0,0,0,.22);transition:transform .25s}
+.show-cover img{display:block;width:100%}
+.show-cover:hover{transform:rotate(-2deg) scale(1.03)}
+.show-cap{margin:clamp(22px,3vw,34px) 0 0;font-weight:800;line-height:1.15;
+  font-size:clamp(19px,2vw,24px)}
+.show-cap small{display:block;font-family:var(--sans);font-weight:500;font-size:15.5px;
+  line-height:1.4;opacity:.92;margin-top:4px}
+.show .cta{margin-top:16px}
+.picks{display:flex;gap:10px;justify-content:center;margin-top:18px}
+.pick{display:block;width:50px;border:3px solid transparent;border-radius:8px;
+  opacity:.6;transition:opacity .2s,transform .2s}
+.pick img{display:block;border-radius:5px}
+.pick.on{opacity:1;border-color:currentColor;transform:translateY(-3px)}
+.pick:hover{opacity:1}
 
-/* ── three facts ────────────────────────────────────── */
-.pitch{display:grid;gap:18px;margin-top:clamp(40px,6vw,76px);
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
-.bit{text-align:center;padding:26px 20px;border-radius:18px;background:var(--field)}
-/* ⚠️ Two more retired pastels, used decoratively. Now the lagoon and blush
-   TINTS, so the three facts sit on colours that belong to real books. */
-.bit:nth-child(2){background:#D0F5F1}
-.bit:nth-child(3){background:#FFE6F6}
-.num{display:block;font-size:clamp(44px,6vw,62px);font-weight:800;line-height:1;
-  color:var(--accent)}
-.bit p{margin:10px 0 0;font-size:16.5px;color:var(--ink);font-weight:600}
+/* ── a line's heading block ─────────────────────────── */
+/* `.badge` keeps its name from the navy lozenge it used to be; it is now the
+   line's name set very large. On a shelf page it is the <h1>. */
+.badge{font-weight:800;font-size:clamp(42px,8.6vw,124px);line-height:.9;
+  letter-spacing:-.035em;margin:0;text-wrap:balance}
+.line-head{margin-bottom:clamp(22px,3.5vw,44px)}
+.line-head:has(.line-title),.pagehead:has(.line-title){display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);
+  gap:10px clamp(24px,5vw,80px);align-items:end}
+.line-title{grid-row:1 / span 2;display:flex;flex-direction:column-reverse;
+  align-items:flex-start;gap:16px}
+.line-head h2:not(.badge){font-size:clamp(28px,4.4vw,52px);font-weight:800;
+  line-height:1;letter-spacing:-.02em;margin:0 0 10px}
+.line-blurb{margin:10px 0 0;max-width:46ch;opacity:.92}
+.pagehead .badge{margin-bottom:.12em}
+.market{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.03em;
+  border:2.5px solid;border-radius:999px;padding:3px 13px}
+.market.soon{background:var(--c2);border-color:var(--c2);color:#3a2400}
 
-/* ── badge heading, the device off every cover ──────── */
-.badge{display:inline-block;background:var(--accent);color:var(--badge-ink);
-  font-weight:800;font-size:clamp(24px,3.6vw,40px);letter-spacing:-.01em;
-  padding:.42em 1.15em;border-radius:999px;margin:0 0 18px;
-  box-shadow:0 0 0 7px var(--paper),0 0 0 11px var(--accent)}
-.pagehead{margin:8px 0 clamp(30px,5vw,52px)}
+/* ── the facts: big numbers on a ruled row ──────────── */
+.pitch{display:flex;flex-wrap:wrap;gap:10px clamp(24px,5vw,70px);padding:16px 0;
+  border-top:3px solid;border-bottom:3px solid}
+.line .pitch{margin:0 0 clamp(26px,4vw,48px)}
+.bit{display:flex;align-items:baseline;gap:12px}
+.num{font-size:clamp(38px,5vw,66px);font-weight:800;line-height:1}
+.bit p{margin:0;font-size:16px;font-weight:600}
 
-/* ── book grid ──────────────────────────────────────── */
-.books{display:grid;gap:clamp(20px,3vw,34px);
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.book{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);border-radius:20px;
-  background:var(--field);padding:22px 20px 24px;text-align:center;
-  transform:rotate(var(--tilt));transition:transform .18s,box-shadow .18s;
-  box-shadow:0 8px 0 rgba(42,52,64,.12)}
-.book:hover{transform:rotate(0deg) translateY(-6px);
-  box-shadow:0 16px 34px rgba(42,52,64,.22)}
+/* ── the shelf: a flat grid, the covers do the work ─── */
+.books{display:grid;gap:clamp(22px,3vw,44px) clamp(14px,2.4vw,36px);
+  grid-template-columns:repeat(4,minmax(0,1fr))}
+.book{display:flex;flex-direction:column;text-decoration:none;color:inherit}
 .shelf{display:block;margin-bottom:16px}
-.shelf img{display:block;width:100%;border-radius:6px;
-  box-shadow:0 8px 20px rgba(42,52,64,.22)}
-.meta{display:flex;flex-direction:column;flex:1 1 auto}
-.bt{display:block;font-size:26px;font-weight:800;line-height:1.1;margin:0}  /* ⛔ margin:0 — .bt became an <h2> on 27 Aug 2026 so each book is a
-     real heading a screen reader can jump between. The UA heading
-     margin would otherwise reopen the gap this rule closes. */
-.bd{display:block;font-size:16px;color:var(--soft);margin:6px 0 12px}
-.market{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.03em;
-  color:#fff;background:var(--accent);border-radius:999px;padding:5px 14px}
-.market.soon{background:var(--c2);color:#3a2400}
-/* ⛔ THE BUTTON SITS AT THE FOOT OF THE CARD, NOT UNDER THE LAST LINE OF TEXT.
-   Author, 5 Sept 2026: *"a bit too high and leaves a lot of empty space at the
-   bottom of the card"*. Measured before changing anything — the gap under the
-   pill ran 95px (Birds), 96 (Bugs), 122 (Sports) and 144 (Vehicles), against
-   26-52px on the `coming soon` cards. ⚠️ The descriptions were NOT the cause:
-   Vehicles and Dinosaurs both wrap to 32px and their gaps were 144 and 51.
-   ⭐ THE REAL CAUSE IS THAT ONLY ONE VARIANT WAS BEING PADDED, AND BY ACCIDENT
-   — the standalone `.soon` PANEL rule further down (margin-top:30px, padding up
-   to 38px, for a box with its own h2 and paragraphs) also matches
-   `.market.soon`, so the "coming soon" pill was inflated into something that
-   happened to fill the card. The Amazon pill got none of it and looked stranded.
-   📌 So the fix is not more padding on `.market` — it is to stop depending on
-   the text ending where the card ends. `.book` and `.meta` become flex columns,
-   `.meta` takes the slack, and `margin-top:auto` seats the pill on the card's
-   floor. Every card in a row then lands its button on the same line, whatever
-   the description does.
-   ⚠️ `.book .market` (0,2,0) is deliberately more specific than `.soon` (0,1,0),
-   which sets margin-top:30px and would otherwise win on source order.
-   ⚠️ align-self:center is REQUIRED: a flex item is blockified, so the
-   inline-block pill would stretch the full card width and `text-align:center`
-   on `.book` would no longer centre it. */
-.book .market{margin-top:auto;align-self:center}
+.shelf img{display:block;width:100%;border-radius:8px;
+  box-shadow:8px 10px 0 rgba(0,0,0,.2);transition:transform .2s,box-shadow .2s}
+.book:hover .shelf img{transform:translate(-4px,-6px) rotate(-1.5deg);
+  box-shadow:14px 18px 0 rgba(0,0,0,.2)}
+.meta{display:flex;flex-direction:column;flex:1 1 auto;align-items:flex-start}
+/* ⛔ margin:0 — `.bt` is a real heading so a screen reader can jump between
+   books, and the UA heading margin would reopen the gap this closes. */
+.bt{display:block;font-size:clamp(17px,1.6vw,21px);font-weight:800;line-height:1.15;margin:0}
+.bd{display:block;font-size:15px;opacity:.85;margin:4px 0 12px}
+/* The pill sits on the card's floor, so a row of cards lands its pills on one
+   line whatever the descriptions do. */
+.book .market{margin-top:auto}
+.more{margin:clamp(26px,4vw,44px) 0 0}
+/* The compact row under a book page — covers and names only. */
+.books.mini .bd{display:none}
+
+/* ── try a question (the game line, free sets only) ─── */
+.tq{margin:0 0 clamp(30px,5vw,60px)}
+.tq-stem{font-weight:800;font-size:clamp(28px,4vw,52px);line-height:1;margin:0 0 18px}
+/* On a band the stem takes the band's button colour (yellow on navy); on the
+   shelf page it stands on paper, where yellow could not be read. */
+.line .tq-stem,.line .tq-or{color:var(--btn)}
+.tq-opts{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  gap:16px;align-items:stretch}
+.tq-opt{font-weight:800;font-size:clamp(19px,2.4vw,30px);line-height:1.15;text-align:left;
+  color:var(--accent);background:var(--badge-ink);border:0;border-radius:22px;
+  padding:clamp(20px,3vw,36px);min-height:140px;cursor:pointer;
+  box-shadow:8px 10px 0 rgba(0,0,0,.35);
+  transition:transform .15s,box-shadow .15s,opacity .2s,background-color .2s}
+.tq-opt:hover{transform:translate(-3px,-4px);box-shadow:11px 14px 0 rgba(0,0,0,.35)}
+.tq-opt.on{background:var(--c3);transform:translate(4px,5px);box-shadow:4px 5px 0 rgba(0,0,0,.35)}
+.tq-opt.off{opacity:.35}
+.tq-or{align-self:center;font-family:var(--round);font-weight:800;font-size:18px}
+.tq-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;min-height:64px;
+  margin:14px 0 0;font-size:15.5px}
+.tq-foot .cta{margin:0}
+.tq-play.in{animation:qin .35s cubic-bezier(.2,.8,.3,1.1)}
+@keyframes qin{from{opacity:0;transform:translateX(30px)}}
+.tq-end{display:flex;gap:clamp(18px,3vw,36px);align-items:center}
+.tq-end img{width:clamp(110px,16vw,170px);border-radius:8px;transform:rotate(-4deg);
+  box-shadow:8px 10px 0 rgba(0,0,0,.35)}
+.tq-end p{margin:6px 0 0}
+.tq-again{font:inherit;color:inherit;background:none;border:0;text-decoration:underline;
+  cursor:pointer;padding:10px 6px;margin-left:8px}
+.tq [hidden]{display:none}
 
 /* ── one title ──────────────────────────────────────── */
-.title{display:grid;gap:clamp(26px,4vw,52px);align-items:start;
+.title{display:grid;gap:clamp(26px,4vw,60px);align-items:start;
   grid-template-columns:minmax(0,4fr) minmax(0,5fr)}
-.art{background:var(--field);border-radius:20px;padding:clamp(18px,3vw,34px)}
-.art img{display:block;border-radius:6px;box-shadow:0 14px 34px rgba(42,52,64,.24)}
-.sub{font-size:17px;color:var(--soft);margin:0 0 18px}
-/* The age band on a BOOK page. Two things are scoped, and the homepage rule is
-   right for the homepage in both.
-   1. `.ages` is the last thing in the hero there — 24px above, nothing below.
-      In the title column it has a lede under it and sat flush against it.
-   2. `.age` is a bordered lozenge sized for a pill PLUS a line name, with the
-      18px right padding that label needs. A book page states its line in the
-      eyebrow directly above, so repeating it here would be the third time on
-      one screen — and without it the lozenge is an empty frame drawn round the
-      pill, lopsided by that padding. Strip the chrome, keep the pill.
-   ⚠️ `.title .age` is deliberately NOT a bare `.age{` at line start:
-   that is what `check_css` counts as a second definition of the same
-   class, and the later rule silently
-   winning is the `.cta` bug that check exists to catch. */
-.title .ages{margin:0 0 18px}
-.title .age{background:none;border:0;box-shadow:none;padding:0;min-height:0}
+.art img{display:block;border-radius:8px;border:5px solid var(--badge-ink);
+  transform:rotate(-3deg);box-shadow:12px 16px 0 rgba(0,0,0,.22)}
+.sub{font-size:17px;margin:0 0 18px;opacity:.9}
+/* The age band on a BOOK page: the pill alone, no lozenge round it. */
+.ages{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px}
+.age{display:inline-flex;align-items:center;font-weight:700;font-size:15.5px}
+.age strong{border:2.5px solid;border-radius:999px;padding:4px 13px;font-weight:800;
+  font-size:14px;white-space:nowrap}
 .bullets{padding-left:0;margin:22px 0 0;list-style:none}
 .bullets li{position:relative;padding-left:34px;margin-bottom:11px;font-weight:600}
 .bullets li::before{content:"";position:absolute;left:0;top:.42em;width:18px;
-  height:18px;border-radius:50%;background:var(--c3)}
-.bullets li:nth-child(2)::before{background:var(--c4)}
-.bullets li:nth-child(3)::before{background:var(--c5)}
-.buy{margin-top:26px;font-weight:700}
-/* ⚠️ THE BOOK PAGE'S COMING-SOON BOX IS KEPT EXACTLY AS IT SHIPPED, ON PURPOSE.
-   It got its field-coloured card by the same accident the pill did — but unlike
-   the pill it reads as deliberate, so scoping `section.soon` above would have
-   silently restyled twelve live book pages that nobody complained about.
-   📌 The look is now DECLARED rather than inherited: delete this rule and the
-   line goes back to plain muted text, which is what `.buy.soon` alone meant. */
-.buy.soon{color:var(--soft);margin-top:30px;padding:clamp(22px,4vw,38px);
-  background:var(--field);border-radius:20px;max-width:60ch}
-/* ⛔ A SECOND `.cta` RULE USED TO LIVE HERE AND IT BROKE THE HOME PAGE.
-   `.cta` was already defined above — accent field, white type, a 3-D press on
-   :hover and :active — and styling the new buy button meant writing a rule with
-   the same class name three hundred lines further down. Being later, it won:
-   the home page's "See the books" button turned dark-on-dark and its text
-   vanished, because `var(--bg)` is not a variable this stylesheet declares and
-   an invalid colour falls back to the inherited one.
+  height:18px;border-radius:50%;background:var(--badge-ink)}
+.buy{margin-top:22px;font-weight:700}
+.title .buy .cta{margin-top:0}
+/* The book page's coming-soon box: declared, not inherited from `section.soon`. */
+.buy.soon{margin-top:30px;padding:clamp(22px,4vw,38px);
+  background:rgba(255,255,255,.2);border-radius:20px;max-width:60ch}
+.isbn{font-size:14px;margin:4px 0 0;opacity:.85}
 
-   📌 Two lessons, and the second is the general one:
-     1. An undeclared custom property fails SILENTLY. It does not warn, it
-        inherits. Every `var(--x)` must match a `--x:` in :root.
-     2. **Before adding a class, grep for it.** This is the same shape as the
-        share card repeating the website hero's overlap bug — the tell is that
-        the same NOUN appears twice, and here the noun was the class name.
-
-   The buy button needs no rule of its own: the original `.cta` is already
-   exactly what it should look like. */
-.isbn{font-size:14px;color:var(--soft);margin:4px 0 0}
-
-/* ── the colour-in holding page ─────────────────────── */
-/* ⛔ `section.soon`, NOT `.soon` — THE BARE CLASS MATCHED THREE DIFFERENT THINGS.
-   Author, 5 Sept 2026, on the shelf pills. `soon` is used as a MODIFIER in two
-   places and as a STANDALONE PANEL here, and this rule was hitting all three:
-   81 `<section class="soon">` (this box, correct), 12
-   `<span class="market soon">` (the shelf pill) and 12 `<p class="buy soon">`
-   (the book page's buy line). The pill was inheriting `padding:38px` and a
-   30px top margin, which inflated a 34px pill to 103px — that is why the
-   coming-soon card looked padded out and the Amazon pill next to it looked
-   stranded. 📌 This file already carries the lesson, twenty lines up: *"Before
-   adding a class, grep for it... the tell is that the same NOUN appears
-   twice."* It happened again with the same noun. ⭐ Scoping to the element the
-   panel is ALWAYS on fixes both accidental matches and needs no markup change. */
-section.soon{margin-top:30px;padding:clamp(22px,4vw,38px);background:var(--field);
+/* ── the pale panel: /colours, /privacy, a shelf's extras ───── */
+/* ⛔ `section.soon`, NOT `.soon` — the bare class also matches the shelf pill
+   (`.market.soon`) and the book page's buy line (`.buy.soon`), and once
+   inflated a 34px pill to 103px. */
+section.soon{padding:clamp(22px,4vw,38px);background:var(--field);
   border-radius:20px;max-width:60ch}
 section.soon p{margin:0 0 14px}
 section.soon p:last-child{margin:0}
-/* ⛔ THIS STYLESHEET DECLARES NO RULE FOR <h2> AT ALL, and until 2 Sept 2026
-   that included the ones inside these boxes. There is a `.bookgroup-head h2`
-   and the shelf cards carry `.bt`, so every h2 anyone had LOOKED at was styled
-   — and a `.soon` heading fell all the way through to the browser default,
-   `font-size:1.5em;margin:.83em 0`. The top margin then STACKED ON TOP of the
-   box's own 38px padding, so "If you photograph a finished page" sat about
-   63px from the top edge and 38px from the bottom: it read as a box that
-   begins with a blank line, which is exactly how the author described it.
-   ⚠️ The fault is invisible in the markup and invisible in the stylesheet —
-   it is the absence of a rule, and nothing greps for an absence.
-   📌 Matches `.soon p`'s 14px so the box's rhythm is one number, not two.
-   Fixes the same silent gap on /halloween and /privacy, which have h2s in
-   these boxes too. */
+/* ⛔ No bare `h2` rule exists in this sheet, so a heading in one of these
+   boxes needs its own or it falls to the browser default and its top margin
+   stacks on the box's padding. */
 section.soon h2{font-size:clamp(19px,2.4vw,24px);font-weight:800;line-height:1.15;
   letter-spacing:-.01em;margin:0 0 14px}
 section.soon h2:not(:first-child){margin-top:26px}
 
 /* ── the finished examples on /colours ───────────────── */
-/* ⛔ THE CLASS IS `finished`, NOT `coloured`, AND THAT IS LOAD-BEARING.
-   `build_site.py` spell-localises the WHOLE page body for the US edition and
-   cannot tell prose from an identifier, so `class="coloured"` became
-   `class="colored"` in the markup while the stylesheet still said `.coloured`.
-   The selector matched nothing: no grid, no `width:100%`, and every finished
-   page fell back to its `width="520"` attribute. **The US page rendered the
-   images at a different size from the UK one** — the only visible symptom of a
-   rule that had already been written down and then broken.
-   📌 Same fault as `/brand/coloured-digger.png` → `colored-digger.png`, which
-   404'd every image on the US page and is why these files are called
-   `finished-*`. The FILENAMES were fixed; the CLASS NAME was missed.
-   ⚠️ Any string that is both content and identifier — class, id, anchor, query
-   key, data attribute — must be dialect-free. Pick a synonym the localiser
-   does not know. */
-/* Three across on a desktop, one on a phone. `minmax(0,1fr)` not `1fr`:
-   a bare 1fr refuses to shrink below the image's intrinsic width and the
-   row overflows on a narrow screen instead of wrapping. */
+/* ⛔ THE CLASS IS `finished`, NOT `coloured`, AND THAT IS LOAD-BEARING: the
+   build spell-localises the whole page body for the US edition and cannot
+   tell prose from an identifier, so `class="coloured"` became
+   `class="colored"` and the rule stopped matching. Any string that is both
+   content and identifier must be dialect-free. */
 .finished{display:grid;gap:18px;margin:28px 0;
   grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr))}
 .finished figure{margin:0}
 .finished img{width:100%;height:auto;display:block;border-radius:14px;
   background:#fff;border:1px solid rgba(0,0,0,.07)}
-
-/* ── grouped under each book's cover ──────────────────── */
-/* The cover leads the group so a reader arriving from the QR code inside one
-   title can see at a glance which book these pages came from. */
-.bookgroup{margin:40px 0 8px}
+.finished figcaption{margin-top:8px;font-size:.9rem;color:var(--soft);
+  text-align:center}
 .bookgroup-head{display:flex;align-items:center;gap:18px;
   padding-bottom:14px;border-bottom:2px solid var(--field)}
 .bookgroup-head h2{margin:0;font-size:clamp(21px,3vw,27px)}
 .bookgroup-cover{width:clamp(64px,9vw,92px);height:auto;display:block;
-  border-radius:5px;box-shadow:0 6px 16px rgba(42,52,64,.22)}
-@media (max-width:430px){
-  .bookgroup-head{gap:13px}
-}
-.finished figcaption{margin-top:8px;font-size:.9rem;color:var(--soft);
-  text-align:center}
-
-/* ── the crayon row, the series' signature device ───── */
-.crayons{height:clamp(56px,7vw,92px);margin-top:clamp(40px,6vw,70px);
-  background:url("/brand/crayons.webp") repeat-x bottom center;
-  background-size:auto 100%}
-
-footer.site{border-top:3px solid var(--rule);padding:32px clamp(16px,4vw,52px) 60px;
-  color:var(--soft);font-size:16px;text-align:center}
-footer.site img{width:64px;margin-bottom:8px}
-.social{display:flex;gap:18px;justify-content:center;margin:14px 0 10px}
-.social a{color:var(--soft);display:inline-flex;transition:color .15s ease,
-  transform .15s ease}
-.social a:hover{color:var(--accent);transform:translateY(-2px)}
-footer.site p{margin:0 auto 8px;max-width:56ch}
-/* ⛔ 24px is WCAG 2.2 SC 2.5.8 AA, and the standalone footer links were 23px —
-   one pixel under, which is exactly the kind of miss no one ever spots by eye.
-   ⚠️ Only links that are ALONE in their paragraph get the box: 2.5.8 exempts
-   inline text targets, and giving `Privacy` or `Switch to United States` a
-   24px box mid-sentence would open up the line spacing of the prose they sit
-   in. `:only-child` is the selector that encodes exactly that distinction. */
-footer.site p > a:only-child{display:inline-flex;align-items:center;
-  min-height:24px}
-.fine{font-size:13.5px;margin-top:14px !important}
-
-@media (max-width:820px){
-  .hero,.title{grid-template-columns:1fr}
-  /* ⛔ COVERS FIRST on a phone. Most visitors arrive by scanning the QR code
-     printed in the book, so they land here on mobile — and in the desktop
-     source order the covers sat below the headline, the lede and the button,
-     roughly 1200px down. A book brand whose first mobile screen is a wall of
-     text has buried the only thing that sells it. */
-  .hero{display:flex;flex-direction:column}
-  .hero .fan{order:-1;margin:0 0 26px}
-  .lede{font-size:18px}
-  h1{font-size:clamp(30px,8vw,42px)}
-}
-@media (max-width:560px){
-  /* A book page's cover filled the whole first screen (~600px tall at 375 wide),
-     pushing the title and the buy button below the fold. A narrower cover
-     still reads, and brings both up. */
-  .title .art{max-width:260px;margin-inline:auto}
-}
-@media (max-width:560px){
-  /* The nav wrapped mid-phrase — "Colouring / Story Books" over two lines and
-     "Colour / in" over two more, three ragged rows of header before any
-     content. Smaller, and never broken inside a label. */
-  header.site{padding:12px 16px;gap:10px 16px}
-  /* ⚠️ `space-between` with a 147px <select> overflowed the viewport by 29px —
-     the edition control was clipped off the right edge. Let the row WRAP
-     instead: the links stay left, the select keeps to the right, and on a
-     narrow phone it drops to its own line rather than off the screen. */
-  header nav{gap:10px 14px;font-size:14.5px;width:100%;flex-wrap:wrap;
-    justify-content:flex-start}
-  /* ⛔ 44px MINIMUM ON ANYTHING A THUMB HAS TO HIT. These links were 22px
-     tall — the height of the type and nothing else — which is half the target
-     size WCAG 2.5.8 and Apple's HIG both ask for, on the primary navigation of
-     a site whose visitors arrive by scanning a QR code from inside a book, i.e.
-     on a phone, one-handed, quite possibly with a child attached.
-     ⚠️ The padding does the work, not the font size: the label stays 14.5px and
-     looks identical. Vertical padding is the cheapest accessibility fix there
-     is and it is invisible.
-     📌 Links inside a SENTENCE are deliberately left alone — 2.5.8 exempts
-     inline text targets, and boxing them out would wreck the line spacing of
-     the footer prose. The rule is about controls, not about every anchor. */
-  header nav a{white-space:nowrap;display:inline-flex;align-items:center;
-    min-height:44px}
-  .skip{min-height:44px;display:inline-flex;align-items:center}
-  .lang{margin-left:auto}
-  /* ⛔ THE RIGHT PADDING IS THE CHEVRON'S ROOM, NOT SPARE SPACE. This said
-     `padding:6px 10px`, which shrank the select to fit the row — and shrank it
-     by deleting the 40px right pad the base rule reserves for the arrow. The
-     arrow is a background-image at `right 15px`, so it does not move when the
-     padding does: on every phone it was painted straight over the last letter
-     of "United Kingdom". 📌 Shorthand padding overrides all four sides; the one
-     you were not thinking about is the one that breaks. */
-  .lang select{font-size:14px;padding:6px 32px 6px 14px;max-width:100%;
-    background-position:right 12px center}
-  .brand{font-size:22px;gap:9px}
-  .brand img{width:46px}
-  .cta{width:100%;text-align:center}
-}
-
-/* ── the home page: age pills, one section per line ──── */
-/* ⭐ 12 Sept 2026. Everything below is the line-sectioned home page, the
-   free-printable pages and the strips that reuse the shelf card. Nothing here
-   names a product line: a third line gets a third `.line` section from the
-   same rules. */
-.ages{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 0}
-.age{display:inline-flex;align-items:center;gap:10px;text-decoration:none;
-  font-weight:700;font-size:15.5px;color:var(--accent);background:var(--paper);
-  border:2.5px solid var(--accent);border-radius:999px;padding:6px 18px 6px 6px;
-  min-height:44px;box-shadow:0 3px 0 var(--accent);transition:transform .12s,
-  box-shadow .12s}
-.age strong{background:var(--accent);color:var(--badge-ink);border-radius:999px;
-  padding:6px 12px;font-weight:800;font-size:14px;white-space:nowrap}
-.age:hover{transform:translateY(1px);box-shadow:0 2px 0 var(--accent)}
-.age:active{transform:translateY(3px);box-shadow:none}
-.line-head{max-width:66ch;margin-bottom:22px}
-.line-head .badge{margin-bottom:14px}
-/* Badge and age chip on one row, so a line is read as name + age at a glance. */
-.line-title{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;
-  margin:0 0 16px}
-.line-title .badge{margin:0}
-.line-title .market{font-size:14px;padding:7px 16px}
-/* A line section stands on its own tint: a soft panel, the cards on top. */
-.line{margin-top:clamp(40px,6vw,72px);background:var(--field);border-radius:30px;
-  padding:clamp(22px,4vw,44px) clamp(18px,3.5vw,44px) clamp(26px,4vw,44px)}
-.line .badge{box-shadow:0 0 0 7px var(--field),0 0 0 11px var(--accent)}
-.line .bit{background:var(--paper)}
-.line .bit:nth-child(2),.line .bit:nth-child(3){background:var(--paper)}
-.line .book{box-shadow:0 8px 0 rgba(42,52,64,.08),0 10px 24px rgba(42,52,64,.10)}
-.line .cta.ghost{background:var(--paper)}
-.line-head h2:not(.badge){font-size:clamp(24px,3.2vw,32px);font-weight:800;
-  line-height:1.1;letter-spacing:-.01em;margin:0 0 10px}
-.line-blurb{margin:10px 0 0;color:var(--soft);max-width:60ch}
-.line .pitch{margin-top:22px;margin-bottom:28px}
-/* Four covers to a row inside a line section or a handover strip: the shelf's
-   260px minimum wraps a four-book strip 3+1 on a laptop, which reads as a
-   mistake rather than a row. 210px seats four across the 1120px main. */
-.line .books{grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr))}
-.more{margin:26px 0 0;text-align:center}
-/* ⛔ WITHOUT THIS THE SHEET NAV IS A ROW OF BARE DIGITS — `12345`, no gap and
-   no affordance, because the links carry nothing but a number. They are
-   numbers on purpose: a pin lands on one sheet and the other four are a
-   footnote, not a menu. ⚠️ `.q-list` and `.q-or` are still unstyled and that
-   is a SEPARATE gap, left where it is rather than fixed from here — the
-   question pages are another session's in-flight work. */
-.sheet-nav{margin:14px 0 0}
-.sheet-nav a{display:inline-block;min-width:2.1em;margin:0 6px 6px 0;
-  padding:5px 0;text-align:center;border:1px solid var(--rule);
-  border-radius:8px;font-weight:700;text-decoration:none}
-/* The outline button — same shape as `.cta`, paper ground, for "see all". */
-.cta.ghost{background:var(--paper);color:var(--accent);
-  border:2.5px solid var(--accent);box-shadow:0 5px 0 var(--accent);margin-top:0}
-.cta.ghost:hover{box-shadow:0 3px 0 var(--accent)}
-.cta.ghost:active{box-shadow:none}
-/* The compact card row under a book page — covers and names only. */
-.books.mini{grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr))}
-.books.mini .book{padding:14px 12px 16px}
-.books.mini .bt{font-size:18px}
-.books.mini .bd{display:none}
+  border-radius:5px;box-shadow:5px 6px 0 rgba(0,0,0,.2)}
 
 /* ── the free printables ────────────────────────────── */
 .free-cards{display:grid;gap:clamp(18px,3vw,30px);
   grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr))}
 .free-card{display:block;text-decoration:none;color:var(--ink);background:#fff;
-  border:2px solid var(--rule);border-radius:20px;padding:18px;
-  transition:transform .18s,box-shadow .18s,border-color .18s}
-.free-card:hover{transform:translateY(-6px);border-color:var(--accent);
-  box-shadow:0 16px 34px rgba(42,52,64,.16)}
+  border-radius:20px;padding:18px;box-shadow:8px 10px 0 rgba(0,0,0,.14);
+  transition:transform .18s,box-shadow .18s}
+.line a.free-card{color:var(--ink)}
+.free-card:hover{transform:translate(-4px,-6px);box-shadow:14px 18px 0 rgba(0,0,0,.14)}
 .free-card .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
   background:var(--field);padding:8px;border-radius:14px}
 .free-card .trio img{width:100%;height:auto;display:block;border-radius:10px;
@@ -487,66 +313,139 @@ footer.site p > a:only-child{display:inline-flex;align-items:center;
   border-radius:16px;padding:8px;transition:transform .18s,box-shadow .18s,
   border-color .18s}
 .art-grid a:hover figure{transform:translateY(-4px);border-color:var(--accent);
-  box-shadow:0 12px 26px rgba(42,52,64,.16)}
+  box-shadow:6px 8px 0 rgba(0,0,0,.14)}
 .art-grid img{width:100%;height:auto;display:block;border-radius:10px}
 .art-grid figcaption{text-align:center;font-weight:700;font-size:15px;margin-top:6px}
 /* The pin landing page: the drawing on the left, the button on the right. */
 .printable{display:grid;gap:clamp(22px,4vw,44px);align-items:center;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);margin-top:8px}
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .preview{margin:0;background:#fff;border:2px solid var(--rule);border-radius:20px;
-  padding:clamp(10px,2vw,22px);box-shadow:0 14px 34px rgba(42,52,64,.14)}
+  padding:clamp(10px,2vw,22px);box-shadow:10px 12px 0 rgba(0,0,0,.12)}
 .preview img{width:100%;height:auto;display:block}
 .printable .buy,.printable .cta,.pagehead .buy{margin-top:0}
 .pagehead .buy{margin-top:22px}
 .printable-copy p{margin:0 0 14px}
+/* On paper the button is navy; on a band it is whatever `--btn` says. */
+.printable .cta,section.soon .cta{background:var(--accent);color:#fff}
+/* The sheet links carry nothing but a number, on purpose: a pin lands on one
+   sheet and the other four are a footnote, not a menu. */
+.sheet-nav{margin:14px 0 0}
+.sheet-nav a{display:inline-block;min-width:2.1em;margin:0 6px 6px 0;
+  padding:5px 0;text-align:center;border:1.5px solid;
+  border-radius:8px;font-weight:700;text-decoration:none}
 
 /* ── the trust strip at the foot of the home page ───── */
-.trust{display:grid;gap:18px;margin-top:clamp(48px,7vw,90px);
-  grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr))}
-.trust .bit{text-align:left;padding:22px 22px 24px}
-.trust strong{display:block;font-size:18px;line-height:1.2;color:var(--accent)}
-.trust p{margin:8px 0 0;font-weight:500;color:var(--soft);font-size:15.5px}
+.trust{display:grid;gap:clamp(18px,4vw,60px);
+  grid-template-columns:repeat(3,minmax(0,1fr))}
+.trust .bit{display:block}
+.trust strong{display:block;font-size:clamp(21px,2.2vw,27px);line-height:1.1;
+  color:var(--accent);margin-bottom:8px}
+.trust p{font-weight:500;color:var(--soft);font-size:15.5px}
+
+footer.site{background:var(--accent);color:var(--badge-ink);
+  padding:clamp(40px,6vw,80px) var(--gutter);font-size:15.5px}
+.wordmark{font-weight:800;font-size:clamp(40px,9vw,128px);line-height:.9;
+  letter-spacing:-.035em;margin:0 0 22px;display:flex;align-items:center;
+  gap:clamp(12px,2vw,28px)}
+footer.site img{width:clamp(48px,7vw,96px);height:auto;flex:none}
+.social{display:flex;gap:18px;margin:14px 0 10px}
+.social a{display:inline-flex;transition:transform .15s ease}
+.social a:hover{transform:translateY(-2px)}
+footer.site p{margin:0 0 8px;max-width:60ch}
+/* ⛔ 24px is WCAG 2.2 SC 2.5.8 AA. Only links ALONE in their paragraph get
+   the box: 2.5.8 exempts inline text targets, and boxing a link mid-sentence
+   would open up the line spacing of the prose round it. */
+footer.site p > a:only-child{display:inline-flex;align-items:center;
+  min-height:24px}
+.fine{font-size:13.5px;opacity:.85}
+
 @media (max-width:820px){
-  .printable{grid-template-columns:1fr}
+  .hero-stage,.title,.printable,.trust,
+  .line-head:has(.line-title),.pagehead:has(.line-title){grid-template-columns:1fr}
+  .line-title{grid-row:auto}
+  /* ⛔ THE COVER FIRST on a phone. Most visitors arrive by scanning the QR
+     code printed in the book, so they land here on mobile, and a book brand
+     whose first mobile screen is a wall of text has buried the one thing that
+     sells it. */
+  .show{order:-1}
+  .show-cover{width:min(64vw,300px)}
+  .books{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tq-opts{grid-template-columns:1fr}
+  .tq-or{justify-self:center}
+  .tq-opt{min-height:0}
+}
+@media (max-width:560px){
+  /* A book page's cover filled the whole first screen, pushing the title and
+     the buy button below the fold. A narrower cover still reads. */
+  .title .art{max-width:240px;margin-inline:auto}
+  header.site{padding:10px var(--pad)}
+  /* ⛔ 44px MINIMUM ON ANYTHING A THUMB HAS TO HIT (WCAG 2.5.8, Apple HIG):
+     the nav links carry it in the base rule; these keep the row from
+     breaking inside a label or pushing the picker off the screen. */
+  header nav{gap:0 14px;font-size:14.5px;width:100%}
+  header nav a{white-space:nowrap}
+  .skip{min-height:44px;display:inline-flex;align-items:center}
+  .lang{margin-left:auto}
+  /* ⛔ THE RIGHT PADDING IS THE CHEVRON'S ROOM, NOT SPARE SPACE. */
+  .lang select{font-size:14px;padding:6px 34px 6px 14px;max-width:100%}
+  .lang::after{right:14px}
+  .brand{font-size:21px;gap:9px}
+  .cta{text-align:center}
+  .show .cta,.title .cta,.more .cta{width:100%}
 }
 
-/* ⛔ KEYBOARD FOCUS, ON EVERY INTERACTIVE THING. Until 27 Aug 2026 the sheet
-   had exactly ONE focus rule — `.lang select` — so a keyboard user tabbing the
-   shelf, the nav, the CTA or the footer saw whatever the browser happened to
-   draw over a tilted, shadowed card, which on `.book` and `.fanned` is next to
-   nothing. 📌 `:focus-visible`, not `:focus`: it shows the ring for keyboard
-   users and keeps it off mouse clicks, which is why the old `.cta:active`
-   press effect still reads as a press and not as an error state. */
+/* ⛔ KEYBOARD FOCUS, ON EVERY INTERACTIVE THING, AND VISIBLE ON EVERY BAND.
+   `:focus-visible`, not `:focus`: the ring shows for keyboard users and stays
+   off mouse clicks. ⚠️ Two rings, white inside navy, because one colour
+   cannot be seen on all of cream, yellow, green and navy: a navy ring on the
+   navy band measured 1:1, and the old yellow one on cream 1.41:1 against the
+   3:1 WCAG asks of a non-text indicator. */
 a:focus-visible,button:focus-visible,select:focus-visible,[tabindex]:focus-visible{
-  outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
-.book:focus-visible,.fanned:focus-visible{outline:3px solid var(--accent);
-  outline-offset:5px}
-/* ⛔ THE RING IS NAVY, NOT `--c3` YELLOW, AND THE REASON IS ARITHMETIC.
-   `--c3` #FFD400 on `--paper` #FFFDF9 measures **1.41:1**. WCAG 2.2 wants 3:1
-   for a non-text indicator, so a yellow ring on this cream is very nearly
-   invisible — the exact failure a focus ring exists to prevent. `--accent`
-   #14233F measures 15.40:1 on the same paper.
-   ⚠️ The pre-existing `.lang select:focus-visible` rule ABOVE still uses
-   `--c3` and has always had this fault; it is left alone here only because
-   changing it is a visual change to a shipped control, not a bug fix in the
-   same breath as adding new rules. Fix it deliberately, not in passing.
-   📌 The CTA is the one control the navy ring cannot sit on — it IS navy
-   (`background:var(--accent)`), so navy-on-navy is 1:1. It gets a cream ring
-   instead, which measures 14.57:1 against that button. */
-.cta:focus-visible{outline:3px solid var(--paper);outline-offset:-6px}
+  outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 7px var(--accent);
+  border-radius:6px}
 
-/* ⛔ MOTION IS A SETTING, NOT A TASTE. This design is built from cards that
-   rotate, lift and scale on hover — `.book`, `.fanned`, `.cta`, `.social a` —
-   and for a visitor with vestibular sensitivity that is not decoration, it is
-   nausea. The OS already knows; the sheet just has to ask.
-   ⚠️ It keeps the COLOUR and shadow transitions and kills only movement, so
-   nothing loses its affordance: a hovered card still lifts its shadow, it just
-   does not fly. 📌 `.01ms` rather than `none` so any code awaiting
-   `transitionend` still fires. */
+/* ── movement: all of it optional ───────────────────── */
+@media (prefers-reduced-motion:no-preference){
+  /* Page to page, the browser cross-fades and a cover glides from its shelf
+     to its own page. Browsers without it simply load the page. */
+  @view-transition{navigation:auto}
+  .show-cover.swap{animation:swap .45s cubic-bezier(.2,.9,.3,1.2)}
+  @keyframes swap{from{opacity:0;transform:translateX(50px) rotate(8deg)}}
+  /* Christmas: slow snow in the hero. The home page's script adds `xmas`
+     only between 1 November and 26 December, so it switches itself off. */
+  .xmas .hero::before{content:"";position:absolute;inset:-200px 0 0;pointer-events:none;
+    opacity:.55;background-image:radial-gradient(circle,#fff 0 3.5px,transparent 4px),
+      radial-gradient(circle,#fff 0 2.5px,transparent 3px),
+      radial-gradient(circle,#fff 0 5px,transparent 5.5px);
+    background-size:170px 200px,110px 200px,260px 200px;
+    background-position:20px 0,70px 90px,120px 40px;animation:snow 12s linear infinite}
+  @keyframes snow{to{transform:translateY(200px)}}
+  /* Names slide in and covers rise as they are scrolled to. */
+  @supports (animation-timeline:view()){
+    .line .badge{animation:slide linear both;animation-timeline:view();
+      animation-range:entry 0% cover 35%}
+    @keyframes slide{from{opacity:0;transform:translateX(-12%)}}
+    .line .book,.line .bit,.tq,.trust .bit,.line .free-card{animation:rise linear both;
+      animation-timeline:view();animation-range:entry 0% entry 55%}
+    @keyframes rise{from{opacity:0;translate:0 50px}}
+  }
+}
+/* ⛔ Nothing above the fold waits on an animation on a phone: in a throttled
+   tab an entrance animation can stall and leave the cover invisible. The
+   desktop entrance is below, and only there. */
+@media (prefers-reduced-motion:no-preference) and (min-width:821px){
+  .hero h1{animation:up .7s cubic-bezier(.2,.8,.2,1) backwards}
+  @keyframes up{from{opacity:0;transform:translateY(.5em) rotate(3deg)}}
+  .show-cover{animation:drop .8s .25s cubic-bezier(.2,.9,.3,1.2) backwards}
+  @keyframes drop{from{opacity:0;transform:translateY(-60px) rotate(12deg) scale(.9)}}
+}
+/* ⛔ MOTION IS A SETTING, NOT A TASTE. For a visitor with vestibular
+   sensitivity cards that lift and slide are not decoration. `.01ms` rather
+   than `none` so any code awaiting `transitionend` still fires. */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;
     animation-iteration-count:1 !important;transition-duration:.01ms !important;
     scroll-behavior:auto !important}
-  .book:hover,.fanned:hover,.cta:hover,.cta:active,.social a:hover{
-    transform:none}
+  .book:hover .shelf img,.cta:hover,.cta:active,.social a:hover,.show-cover:hover,
+  .free-card:hover,.tq-opt:hover{transform:none}
 }
