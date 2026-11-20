@@ -336,10 +336,33 @@ section.soon h2:not(:first-child){margin-top:26px}
 .free-set-head .line-blurb{margin-top:8px}
 .free-set .art-grid{grid-template-columns:repeat(6,minmax(0,1fr));margin-bottom:0}
 .free-set .art-grid figure{border-color:transparent}
-/* Two notes side by side instead of stacked half-width boxes. */
-.pair{display:grid;gap:clamp(16px,2.4vw,30px);
+/* The hub's two notes, side by side on a band of their own. */
+.pair{display:grid;gap:clamp(34px,5vw,80px);
   grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
-.pair section.soon{max-width:none}
+.note h2{font-size:clamp(28px,4vw,50px);font-weight:800;line-height:1;
+  letter-spacing:-.02em;margin:0 0 14px}
+.note p{margin:0 0 20px;max-width:46ch;font-size:18.5px}
+.note .vids{display:grid;gap:12px;max-width:none}
+/* A video is a button, not a line of underlined text: a cream pill with a
+   red play disc. ⚠️ `.line a.vid` so its ink beats the band's `color:inherit`. */
+.vid{display:flex;align-items:center;gap:14px;text-decoration:none;
+  font-family:var(--round);font-weight:800;font-size:clamp(18px,2vw,22px);
+  background:var(--badge-ink);border-radius:999px;padding:11px 24px 11px 12px;
+  box-shadow:6px 7px 0 rgba(0,0,0,.25);transition:transform .15s,box-shadow .15s}
+.line a.vid{color:var(--accent)}
+.vid:hover{transform:translate(-2px,-3px);box-shadow:9px 11px 0 rgba(0,0,0,.25)}
+.vid small{margin-left:auto;font-family:var(--sans);font-weight:500;font-size:15px;
+  opacity:.8;white-space:nowrap}
+.play{flex:none;width:40px;height:40px;border-radius:50%;background:var(--c1);
+  position:relative}
+.play::after{content:"";position:absolute;left:16px;top:12px;border-style:solid;
+  border-width:8px 0 8px 13px;border-color:transparent transparent transparent #fff}
+.note .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:none}
+.note .trio img{display:block;width:100%;height:auto;border-radius:10px;
+  border:4px solid var(--badge-ink);box-shadow:5px 6px 0 rgba(0,0,0,.22)}
+.note .trio img:nth-child(1){transform:rotate(-3deg)}
+.note .trio img:nth-child(2){transform:rotate(2deg)}
+.note .trio img:nth-child(3){transform:rotate(-1.5deg)}
 /* The pin landing page: the drawing on the left, the button on the right. */
 .printable{display:grid;gap:clamp(22px,4vw,44px);align-items:center;
   grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
@@ -472,5 +495,5 @@ a:focus-visible,button:focus-visible,select:focus-visible,[tabindex]:focus-visib
     animation-iteration-count:1 !important;transition-duration:.01ms !important;
     scroll-behavior:auto !important}
   .book:hover .shelf img,.cta:hover,.cta:active,.social a:hover,.show-cover:hover,
-  .free-card:hover,.tq-opt:hover{transform:none}
+  .free-card:hover,.tq-opt:hover,.vid:hover{transform:none}
 }
