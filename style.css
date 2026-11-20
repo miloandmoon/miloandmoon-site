@@ -205,6 +205,15 @@ h1{font-size:clamp(34px,5.4vw,64px);line-height:1;margin:0 0 .35em;
 /* The compact row under a book page — covers and names only. */
 .books.mini .bd{display:none}
 
+/* ── look inside: a swipeable row, no script ────────── */
+/* Scroll-snap does the swiping. ⚠️ `tabindex="0"` on the row is what lets a
+   keyboard scroll it; without it the pages past the edge cannot be reached. */
+.swipe{display:flex;gap:clamp(12px,2vw,24px);overflow-x:auto;
+  scroll-snap-type:x mandatory;padding:6px 10px 22px 2px;scrollbar-width:thin}
+.swipe figure{flex:0 0 min(64vw,300px);margin:0;scroll-snap-align:start}
+.swipe img{display:block;width:100%;border-radius:10px;background:#fff;
+  box-shadow:6px 8px 0 rgba(0,0,0,.16)}
+
 /* ── try a question (the game line, free sets only) ─── */
 .tq{margin:0 0 clamp(30px,5vw,60px)}
 .tq-stem{font-weight:800;font-size:clamp(28px,4vw,52px);line-height:1;margin:0 0 18px}
@@ -316,6 +325,21 @@ section.soon h2:not(:first-child){margin-top:26px}
   box-shadow:6px 8px 0 rgba(0,0,0,.14)}
 .art-grid img{width:100%;height:auto;display:block;border-radius:10px}
 .art-grid figcaption{text-align:center;font-weight:700;font-size:15px;margin-top:6px}
+/* The free hub: each set is a heading with its PDF button beside it, then
+   its pages six to a row — twelve pages make two full rows, where an
+   auto-fill grid left a ragged seven and five. */
+.free-set+.free-set{margin-top:clamp(36px,5vw,68px)}
+.free-set-head{display:flex;flex-wrap:wrap;align-items:flex-end;
+  justify-content:space-between;gap:14px 28px;margin-bottom:4px}
+.free-set-head h2{font-size:clamp(26px,3.6vw,44px);font-weight:800;line-height:1;
+  letter-spacing:-.02em;margin:0}
+.free-set-head .line-blurb{margin-top:8px}
+.free-set .art-grid{grid-template-columns:repeat(6,minmax(0,1fr));margin-bottom:0}
+.free-set .art-grid figure{border-color:transparent}
+/* Two notes side by side instead of stacked half-width boxes. */
+.pair{display:grid;gap:clamp(16px,2.4vw,30px);
+  grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
+.pair section.soon{max-width:none}
 /* The pin landing page: the drawing on the left, the button on the right. */
 .printable{display:grid;gap:clamp(22px,4vw,44px);align-items:center;
   grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
@@ -370,6 +394,7 @@ footer.site p > a:only-child{display:inline-flex;align-items:center;
   .show{order:-1}
   .show-cover{width:min(64vw,300px)}
   .books{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .free-set .art-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .tq-opts{grid-template-columns:1fr}
   .tq-or{justify-self:center}
   .tq-opt{min-height:0}
