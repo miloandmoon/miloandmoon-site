@@ -395,8 +395,13 @@ footer.site{background:var(--accent);color:var(--badge-ink);
   letter-spacing:-.035em;margin:0 0 22px;display:flex;align-items:center;
   gap:clamp(12px,2vw,28px)}
 footer.site img{width:clamp(48px,7vw,96px);height:auto;flex:none}
-.social{display:flex;gap:18px;margin:14px 0 10px}
-.social a{display:inline-flex;transition:transform .15s ease}
+/* ⛔ 44px TAP BOXES ROUND 24px DRAWINGS. The icons were 24px links 18px
+   apart — five small targets in a row at the foot of a page read on a phone.
+   The row is pulled 10px left so the first drawing still lines up with the
+   text above it. */
+.social{display:flex;gap:0;margin:6px 0 2px -10px}
+.social a{display:inline-flex;align-items:center;justify-content:center;
+  min-width:44px;min-height:44px;transition:transform .15s ease}
 .social a:hover{transform:translateY(-2px)}
 footer.site p{margin:0 0 8px;max-width:60ch}
 /* ⛔ 24px is WCAG 2.2 SC 2.5.8 AA. Only links ALONE in their paragraph get
@@ -426,20 +431,31 @@ footer.site p > a:only-child{display:inline-flex;align-items:center;
   /* A book page's cover filled the whole first screen, pushing the title and
      the buy button below the fold. A narrower cover still reads. */
   .title .art{max-width:240px;margin-inline:auto}
-  header.site{padding:10px var(--pad)}
+  /* ⭐ THE PICKER SITS BESIDE THE LOGO, NOT ON A ROW OF ITS OWN — 20 Nov 2026.
+     The phone header was four rows and about 200px, a quarter of the first
+     screen, on a site most people reach by scanning a code with a phone. The
+     picker is lifted out of the nav's flow to the top right; the links keep
+     their two rows because all four must stay visible. */
+  header.site{padding:10px var(--pad);position:relative}
   /* ⛔ 44px MINIMUM ON ANYTHING A THUMB HAS TO HIT (WCAG 2.5.8, Apple HIG):
      the nav links carry it in the base rule; these keep the row from
      breaking inside a label or pushing the picker off the screen. */
   header nav{gap:0 14px;font-size:14.5px;width:100%}
   header nav a{white-space:nowrap}
   .skip{min-height:44px;display:inline-flex;align-items:center}
-  .lang{margin-left:auto}
-  /* ⛔ THE RIGHT PADDING IS THE CHEVRON'S ROOM, NOT SPARE SPACE. */
-  .lang select{font-size:14px;padding:6px 34px 6px 14px;max-width:100%}
+  .lang{position:absolute;top:11px;right:var(--pad);margin:0}
+  /* ⛔ THE RIGHT PADDING IS THE CHEVRON'S ROOM, NOT SPARE SPACE. ⚠️ And
+     `min-height:44px`: this control measured 38px on a phone, the one tap
+     target in the header under the size the links beside it keep to. */
+  .lang select{font-size:14px;padding:6px 34px 6px 14px;max-width:46vw;min-height:44px}
   .lang::after{right:14px}
-  .brand{font-size:21px;gap:9px}
+  .brand{font-size:21px;gap:9px;min-height:46px}
   .cta{text-align:center}
   .show .cta,.title .cta,.more .cta{width:100%}
+}
+
+@media (max-width:359px){
+  .brand span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 }
 
 /* ⛔ KEYBOARD FOCUS, ON EVERY INTERACTIVE THING, AND VISIBLE ON EVERY BAND.
