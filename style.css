@@ -71,6 +71,8 @@ header nav a{text-decoration:none;font-weight:700;min-height:44px;
   display:inline-flex;align-items:center}
 header nav a:hover{text-decoration:underline;text-underline-offset:6px;
   text-decoration-thickness:3px}
+/* Each link holds a full name and a short one; phones show the short one. */
+.ns{display:none}
 /* The edition picker stays a native <select> on purpose — on a phone that
    opens the OS wheel, a better control than anything rebuilt in script.
    ⚠️ The chevron is a pseudo-element in `currentColor`, not an image: the
@@ -440,8 +442,14 @@ footer.site p > a:only-child{display:inline-flex;align-items:center;
   /* ⛔ 44px MINIMUM ON ANYTHING A THUMB HAS TO HIT (WCAG 2.5.8, Apple HIG):
      the nav links carry it in the base rule; these keep the row from
      breaking inside a label or pushing the picker off the screen. */
-  header nav{gap:0 14px;font-size:14.5px;width:100%}
-  header nav a{white-space:nowrap}
+  /* ⭐ ONE ROW OF LINKS ON A PHONE: the short names, never wrapped. ⚠️ If a
+     future line makes the row too long it scrolls sideways inside the header
+     rather than wrapping to a second row or widening the page. */
+  header nav{gap:0 12px;font-size:14.5px;width:100%;flex-wrap:nowrap;
+    overflow-x:auto;scrollbar-width:none}
+  header nav a{white-space:nowrap;flex:none}
+  .nl{display:none}
+  .ns{display:inline}
   .skip{min-height:44px;display:inline-flex;align-items:center}
   .lang{position:absolute;top:11px;right:var(--pad);margin:0}
   /* ⛔ THE RIGHT PADDING IS THE CHEVRON'S ROOM, NOT SPARE SPACE. ⚠️ And
@@ -454,8 +462,17 @@ footer.site p > a:only-child{display:inline-flex;align-items:center;
   .show .cta,.title .cta,.more .cta{width:100%}
 }
 
+/* The four short names measured 332px at 14.5px; a 375px phone gives the row
+   341px, a 360px one 328px and a 320px one 288px. So the type steps down
+   rather than letting the last link slide off the edge. */
+@media (max-width:374px){
+  header nav{gap:0 10px;font-size:13.5px}
+}
 @media (max-width:359px){
   .brand span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+}
+@media (max-width:339px){
+  header nav{gap:0 8px;font-size:12.5px}
 }
 
 /* ⛔ KEYBOARD FOCUS, ON EVERY INTERACTIVE THING, AND VISIBLE ON EVERY BAND.
